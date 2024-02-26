@@ -52,13 +52,16 @@ def distribute_chocolates_iterative(chocolates, students):
 
     # Iterate over each student and assign them a chocolate
     for i in range(len(students)):
-        distribution[students[i]] = chocolates_sorted[i]
+        if i < len(chocolates_sorted):
+            distribution[students[i]] = chocolates_sorted[i]
+        else:
+            break
 
     return distribution
 
 def distribute_chocolates_recursive(chocolates, students):
     """Distribute chocolates to students recursively."""
-    # Base case: if no chocolates or no students, return empty distribution
+    # if no chocolates or no students, return empty distribution
     if not chocolates or not students:
         return {}
 
@@ -68,29 +71,57 @@ def distribute_chocolates_recursive(chocolates, students):
     # Create an empty dictionary to store distribution of chocolates to students
     distribution = {}
 
-    # Assign the first chocolate to the first student
-    distribution[students[0]] = chocolates_sorted[0]
-
-    # Recursively distribute remaining chocolates to remaining students
-    remaining_distribution = distribute_chocolates_recursive(chocolates_sorted[1:], students[1:])
-
-    # Merge the remaining distribution with the current distribution
-    distribution.update(remaining_distribution)
+    # Assign chocolates to students
+    for student, chocolate in zip(students, chocolates_sorted):
+        distribution[student] = chocolate
 
     return distribution
 
-# Test cases
-chocolates = [Chocolate(10, 5, 'dark'), Chocolate(15, 7, 'milk'), Chocolate(8, 3, 'white')]
-students = ['Shouq', 'Alya', 'Abdullah']
+# Additional test cases
 
-# Iterative distribution
-distribution_iterative = distribute_chocolates_iterative(chocolates, students)
-print("Iterative distribution:")
-for student, chocolate in distribution_iterative.items(): # to make the output clearer. it was not clear before.
-    print(f"{student}: {chocolate}")
+# 1. Empty Input
+chocolates_empty = []
+students_empty = []
 
-# Recursive distribution
-distribution_recursive = distribute_chocolates_recursive(chocolates, students)
-print("\nRecursive distribution:")
-for student, chocolate in distribution_recursive.items(): # to make the output clearer. it was not clear before.
-    print(f"{student}: {chocolate}")
+# 2. Single Chocolate and Single Student
+chocolates_single = [Chocolate(10, 5, 'dark')]
+students_single = ['Shouq']
+
+# 3. Equal Number of Chocolates and Students
+chocolates_equal = [Chocolate(10, 5, 'dark'), Chocolate(15, 7, 'milk'), Chocolate(8, 3, 'white')]
+students_equal = ['Shouq', 'Alya', 'Abdullah']
+
+# 4. Unequal Number of Chocolates and Students
+chocolates_unequal = [Chocolate(10, 5, 'dark'), Chocolate(15, 7, 'milk')]
+students_unequal = ['Shouq', 'Alya', 'Abdullah']
+
+# 5. Identical Chocolates
+chocolates_identical = [Chocolate(10, 5, 'dark'), Chocolate(15, 5, 'milk'), Chocolate(8, 5, 'white')]
+students_identical = ['Shouq', 'Alya', 'Abdullah']
+
+# 6. Identical Students
+chocolates_identical_students = [Chocolate(10, 5, 'dark'), Chocolate(15, 7, 'milk'), Chocolate(8, 3, 'white')]
+students_identical_students = ['Shouq', 'Shouq', 'Shouq']
+
+# Test each case
+test_cases = [
+    ("Single Chocolate and Single Student", chocolates_single, students_single),
+    ("Equal Number of Chocolates and Students", chocolates_equal, students_equal),
+    ("Unequal Number of Chocolates and Students", chocolates_unequal, students_unequal),
+    ("Identical Chocolates", chocolates_identical, students_identical),
+    ("Identical Students", chocolates_identical_students, students_identical_students)
+]
+
+for test_name, chocolates, students in test_cases:
+    print(f"\nTest Case: {test_name}")
+    # Iterative distribution
+    distribution_iterative = distribute_chocolates_iterative(chocolates, students)
+    print("Iterative distribution:")
+    for student, chocolate in distribution_iterative.items():
+        print(f"{student}: {chocolate}")
+
+    # Recursive distribution
+    distribution_recursive = distribute_chocolates_recursive(chocolates, students)
+    print("\nRecursive distribution:")
+    for student, chocolate in distribution_recursive.items():
+        print(f"{student}: {chocolate}")
